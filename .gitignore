@@ -1,2 +1,4 @@
-builds/**/*
-!builds/**/.keep
+builds/*
+!builds/.keep
+
+*.DS_Store
