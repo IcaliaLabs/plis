@@ -1,6 +1,8 @@
 # Plis
 
 ```bash
+# Install Plis
+go install plis.go
 
 # Start a docker-compose project:
 plis start
