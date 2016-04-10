@@ -18,21 +18,15 @@ type ContainerState struct {
 
 func GetProjectContainerIds() []string {
   var (
-		cmdOut []byte
-		err    error
-    rawIds []string
+		rawIds []string
     ids    []string
 	)
 
   cmdName := "docker-compose"
 	cmdArgs := []string{"ps", "-q"}
+  cmdOut  := ShellOutGeneratedCommand(cmdName, cmdArgs)
 
-  if cmdOut, err = exec.Command(cmdName, cmdArgs...).Output(); err != nil {
-    fmt.Println("Errrr")
-    os.Exit(1)
-	}
-
-  rawIds = strings.Split(string(cmdOut), "\n")
+  rawIds = strings.Split(cmdOut, "\n")
 
   ids = rawIds[:0]
   for _, x := range rawIds {
@@ -46,31 +40,27 @@ func GetProjectContainerIds() []string {
 
 func GetProjectContainerStates() []ContainerState {
   var (
-		cmdOut []byte
-		err    error
-    rawContainerStates []string
+		rawContainerStates []string
     containerStates []ContainerState
 	)
 
   ids := GetProjectContainerIds()
 
-  cmdName := "docker"
-	cmdArgs := append([]string{"inspect", "--format='{{.Name}} {{.State.Running}}'"}, ids...)
+  if len(ids) > 0 {
+    cmdName := "docker"
+  	cmdArgs := append([]string{"inspect", "--format='{{.Name}} {{.State.Running}}'"}, ids...)
+    cmdOut  := ShellOutGeneratedCommand(cmdName, cmdArgs)
 
-  if cmdOut, err = exec.Command(cmdName, cmdArgs...).Output(); err != nil {
-    fmt.Println("Errrr")
-    os.Exit(1)
-	}
+    rawContainerStates = strings.Split(cmdOut, "\n")
 
-  rawContainerStates = strings.Split(string(cmdOut), "\n")
-
-  for i := range rawContainerStates {
-    if rawContainerStates[i] != "" {
-      fields := strings.Fields(rawContainerStates[i])
-      state := ContainerState{}
-      state.Name = fields[0][1:len(fields[0])]
-      state.IsRunning = fields[1] == "true"
-      containerStates = append(containerStates, state)
+    for i := range rawContainerStates {
+      if rawContainerStates[i] != "" {
+        fields := strings.Fields(rawContainerStates[i])
+        state := ContainerState{}
+        state.Name = fields[0][1:len(fields[0])]
+        state.IsRunning = fields[1] == "true"
+        containerStates = append(containerStates, state)
+      }
     }
   }
 
@@ -86,6 +76,22 @@ func FindFirstContainer(serviceName string, containers []ContainerState) Contain
   }
 
   return foundContainer
+}
+
+func ShellOutGeneratedCommand(binName string, args []string) string {
+  var (
+    output []byte
+    error  error
+  )
+  output, error = exec.Command(binName, args...).Output()
+
+  if error != nil {
+    color.Red("Command:", binName + " " + strings.Join(args, " "))
+    color.Red("Error:", error)
+    os.Exit(1)
+	}
+
+  return string(output)
 }
 
 func RunGeneratedCommand(command []string) {
