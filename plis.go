@@ -7,6 +7,7 @@ import (
   "regexp"
 	"os"
 	"os/exec"
+  "github.com/fatih/color"
   "github.com/codegangsta/cli"
 )
 
@@ -88,7 +89,7 @@ func FindFirstContainer(serviceName string, containers []ContainerState) Contain
 }
 
 func RunGeneratedCommand(command []string) {
-  fmt.Println(strings.Join(command, " "))
+  color.Cyan(strings.Join(command, " "))
 
   binary, lookErr := exec.LookPath(command[0])
   if lookErr != nil {  panic(lookErr) }
@@ -123,6 +124,8 @@ func Start(c *cli.Context) {
     if len(servicesAlreadyCreated) != len(requestedServices) {
       args = []string{"docker-compose", "up", "-d"}
     }
+  } else if len(GetProjectContainerIds()) < 1 {
+    args = []string{"docker-compose", "up", "-d"}
   }
 
   command := append(args, requestedServices...)
@@ -165,47 +168,61 @@ func Run(c *cli.Context) {
 func main() {
   app := cli.NewApp()
   app.Name = "Plis"
-  app.Usage = "Translates common actions into docker/docker-compose commands"
+  app.Usage = "Translates common actions into docker/docker-compose commands by asking nicely"
+  app.Version = "0.0.0.build1"
 
   app.Commands = []cli.Command{
     {
       Name:    "start",
-      Aliases: []string{"s"},
       Usage:   "Starts the project's containers",
       Action:  Start,
     },
     {
       Name:    "stop",
-      Aliases: []string{"st"},
       Usage:   "Stop the project's running processes",
       Action:  func (c *cli.Context) { Bypass("stop", c.Args()) },
       SkipFlagParsing: true,
     },
     {
       Name:    "restart",
-      Aliases: []string{"rs"},
       Usage:   "Restarts the project's running processes",
       Action:  func (c *cli.Context) { Bypass("restart", c.Args()) },
       SkipFlagParsing: true,
     },
     {
       Name:    "attach",
-      Aliases: []string{"a"},
       Usage:   "Attach the console to a running process",
       Action:  Attach,
+      SkipFlagParsing: true,
     },
     {
       Name:    "run",
-      Aliases: []string{"r"},
       Usage:   "Runs a command in a running or new container of a particular service",
       Action:  Run,
       SkipFlagParsing: true,
     },
     {
       Name:    "ps",
-      Aliases: []string{"p"},
       Usage:   "Lists the project's running processes",
       Action:  func (c *cli.Context) { Bypass("ps", c.Args()) },
+      SkipFlagParsing: true,
+    },
+    {
+      Name:    "rm",
+      Usage:   "Removes the project's running processes",
+      Action:  func (c *cli.Context) { Bypass("rm", c.Args()) },
+      SkipFlagParsing: true,
+    },
+    {
+      Name:    "logs",
+      Usage:   "Opens the logs of running processes",
+      Action:  func (c *cli.Context) { Bypass("logs", c.Args()) },
+      SkipFlagParsing: true,
+    },
+    {
+      Name:    "down",
+      Usage:   "Stops and removes all containers",
+      Action:  func (c *cli.Context) { Bypass("down", c.Args()) },
       SkipFlagParsing: true,
     },
   }
