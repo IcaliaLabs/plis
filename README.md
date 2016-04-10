@@ -2,6 +2,9 @@
 
 Helps your development process with Docker Compose by asking nicely :)
 
+## Install
+See ([Releases Page](https://github.com/IcaliaLabs/plis/releases))
+
 ## Special behaviors:
 * `plis start [services-optional]`: Starts a docker-compose project, with the following extra functionality:
   * (TODO) If Docker Toolbox is not installed, it will try to install it.
