@@ -175,7 +175,7 @@ func main() {
   app := cli.NewApp()
   app.Name = "Plis"
   app.Usage = "Translates common actions into docker/docker-compose commands by asking nicely"
-  app.Version = "0.0.0.build2"
+  app.Version = "0.0.0.build3"
 
   app.Commands = []cli.Command{
     {
@@ -229,6 +229,12 @@ func main() {
       Name:    "down",
       Usage:   "Stops and removes all containers",
       Action:  func (c *cli.Context) { Bypass("down", c.Args()) },
+      SkipFlagParsing: true,
+    },
+    {
+      Name:    "scale",
+      Usage:   "Scales the given services",
+      Action:  func (c *cli.Context) { Bypass("scale", c.Args()) },
       SkipFlagParsing: true,
     },
   }
