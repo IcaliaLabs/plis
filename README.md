@@ -1,3 +1,6 @@
+[![Code Climate](https://codeclimate.com/repos/5713cd028daddd007c000a55/badges/23a412d4ad98ff7d79c6/gpa.svg)](https://codeclimate.com/repos/5713cd028daddd007c000a55/feed)
+[![Issue Count](https://codeclimate.com/repos/5713cd028daddd007c000a55/badges/23a412d4ad98ff7d79c6/issue_count.svg)](https://codeclimate.com/repos/5713cd028daddd007c000a55/feed)
+
 # Plis
 
 Helps your development process with Docker Compose by asking nicely :)
