@@ -8,7 +8,7 @@ import (
 	"os"
 	"os/exec"
   "github.com/fatih/color"
-  "github.com/codegangsta/cli"
+  "github.com/urfave/cli"
 )
 
 type ContainerState struct {
@@ -104,7 +104,7 @@ func RunGeneratedCommand(command []string) {
   if execErr != nil { panic(execErr) }
 }
 
-func Bypass(cmd string, args []string) {
+func BypassToCompose(cmd string, args []string) {
   RunGeneratedCommand(append([]string{"docker-compose", cmd}, args...))
 }
 
@@ -174,8 +174,8 @@ func Run(c *cli.Context) {
 func main() {
   app := cli.NewApp()
   app.Name = "Plis"
-  app.Usage = "Translates common actions into docker/docker-compose commands by asking nicely"
-  app.Version = "0.0.0.build3"
+  app.Usage = "Translates common development actions into docker/docker-compose commands by asking nicely"
+  app.Version = "0.0.0.build4"
 
   app.Commands = []cli.Command{
     {
@@ -186,13 +186,13 @@ func main() {
     {
       Name:    "stop",
       Usage:   "Stop the project's running processes",
-      Action:  func (c *cli.Context) { Bypass("stop", c.Args()) },
+      Action:  func (c *cli.Context) { BypassToCompose("stop", c.Args()) },
       SkipFlagParsing: true,
     },
     {
       Name:    "restart",
       Usage:   "Restarts the project's running processes",
-      Action:  func (c *cli.Context) { Bypass("restart", c.Args()) },
+      Action:  func (c *cli.Context) { BypassToCompose("restart", c.Args()) },
       SkipFlagParsing: true,
     },
     {
@@ -210,31 +210,43 @@ func main() {
     {
       Name:    "ps",
       Usage:   "Lists the project's running processes",
-      Action:  func (c *cli.Context) { Bypass("ps", c.Args()) },
+      Action:  func (c *cli.Context) { BypassToCompose("ps", c.Args()) },
       SkipFlagParsing: true,
     },
     {
       Name:    "rm",
       Usage:   "Removes the project's running processes",
-      Action:  func (c *cli.Context) { Bypass("rm", c.Args()) },
+      Action:  func (c *cli.Context) { BypassToCompose("rm", c.Args()) },
       SkipFlagParsing: true,
     },
     {
       Name:    "logs",
       Usage:   "Opens the logs of running processes",
-      Action:  func (c *cli.Context) { Bypass("logs", c.Args()) },
+      Action:  func (c *cli.Context) { BypassToCompose("logs", c.Args()) },
       SkipFlagParsing: true,
     },
     {
       Name:    "down",
       Usage:   "Stops and removes all containers",
-      Action:  func (c *cli.Context) { Bypass("down", c.Args()) },
+      Action:  func (c *cli.Context) { BypassToCompose("down", c.Args()) },
       SkipFlagParsing: true,
     },
     {
       Name:    "scale",
       Usage:   "Scales the given services",
-      Action:  func (c *cli.Context) { Bypass("scale", c.Args()) },
+      Action:  func (c *cli.Context) { BypassToCompose("scale", c.Args()) },
+      SkipFlagParsing: true,
+    },
+    {
+      Name:    "build",
+      Usage:   "Build or rebuild services",
+      Action:  func (c *cli.Context) { BypassToCompose("build", c.Args()) },
+      SkipFlagParsing: true,
+    },
+    {
+      Name:    "bundle",
+      Usage:   "Generate a Docker bundle from the Compose file",
+      Action:  func (c *cli.Context) { BypassToCompose("bundle", c.Args()) },
       SkipFlagParsing: true,
     },
   }
