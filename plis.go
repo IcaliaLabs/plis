@@ -8,7 +8,7 @@ import (
 	"os"
 	"os/exec"
   "github.com/fatih/color"
-  "github.com/codegangsta/cli"
+  "github.com/urfave/cli"
 )
 
 type ContainerState struct {
