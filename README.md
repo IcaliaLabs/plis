@@ -38,7 +38,7 @@ plis stop web
 ```
 
 ## TODO's:
-- [ ] `build` command to invoke the docker-compose build command.
+- [x] `build` command to invoke the docker-compose build command.
 - [ ] Change the `run` command to use `docker-compose exec` instead of `docker exec` whenever a running container is already available.
 - [ ] Copy (from existing templates/examples) or generate blank dotenv files referenced in the Compose file.
 - [ ] Install Docker (for Mac/Windows or native for Linux) if it is missing.
