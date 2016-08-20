@@ -39,6 +39,7 @@ plis stop web
 
 ## TODO's:
 - [x] `build` command to invoke the docker-compose build command.
+- [ ] `start` command with just one service should attach to the container immediately. (i.e.: `plis start web` starts a rails web container and attaches to it, mimicking the behavior of running `rails server` on the host)
 - [ ] Change the `run` command to use `docker-compose exec` instead of `docker exec` whenever a running container is already available.
 - [ ] Copy (from existing templates/examples) or generate blank dotenv files referenced in the Compose file.
 - [ ] Install Docker (for Mac/Windows or native for Linux) if it is missing.
