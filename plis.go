@@ -9,11 +9,26 @@ import (
 	"os/exec"
   "github.com/fatih/color"
   "github.com/urfave/cli"
+  "net/url"
+  "gopkg.in/yaml.v2"
+  "io/ioutil"
 )
 
 type ContainerState struct {
   Name string
   IsRunning bool
+}
+
+type ComposeService struct {
+  EnvFile []string
+}
+
+type Compose struct {
+  Services map[string]ComposeService
+}
+
+func PanicIfError(e error) {
+  if e != nil { panic(e) }
 }
 
 func GetProjectContainerIds() []string {
@@ -110,9 +125,24 @@ func BypassToCompose(cmd string, args []string) {
 }
 
 func Start(c *cli.Context) {
-  args := []string{"docker-compose", "start"}
-  requestedServices := c.Args()
+  EnsureEnvFilesExist()
+  // StartServices(c.Args())
+}
 
+func EnsureEnvFilesExist() {
+  source, err := ioutil.ReadFile("docker-compose.yml")
+  PanicIfError(err)
+
+  var compose Compose
+
+  err = yaml.Unmarshal(source, &compose)
+  PanicIfError(err)
+
+  fmt.Printf("Value: %#v\n", compose.Services[1])
+}
+
+func StartServices(requestedServices []string) {
+  args := []string{"docker-compose", "start"}
   if len(requestedServices) > 0 {
     servicesAlreadyCreated := []string{}
     containers := GetProjectContainerStates()
@@ -171,6 +201,36 @@ func Run(c *cli.Context) {
   RunGeneratedCommand(cmdArgs)
 }
 
+func Clun(c *cli.Context) {
+  CloneProject(c)
+  os.Chdir(ClunDirName(c))
+  StartServices([]string{})
+}
+
+func CloneProject(c *cli.Context) {
+  repoUri := ClunRepoUri(c)
+  dirName := ClunDirName(c)
+  fmt.Println("Cloning into '" + dirName + "'...")
+  cloneCommand := exec.Command("git", "clone", repoUri.String(), dirName)
+  _, cloneErr := cloneCommand.Output()
+  if cloneErr != nil { panic(cloneErr) }
+
+}
+
+func ClunDirName(c *cli.Context) string {
+  dirName := c.Args()[1:].First()
+  if dirName == "" {
+    repoUriPaths := strings.Split(ClunRepoUri(c).Path, "/")
+    dirName = strings.Trim(repoUriPaths[len(repoUriPaths)-1], ".git")
+  }
+  return dirName
+}
+
+func ClunRepoUri(c *cli.Context) *url.URL {
+  repoUri, repoUriParseError := url.Parse(c.Args().First())
+  if repoUriParseError != nil { panic(repoUriParseError) }
+  return repoUri
+}
 
 func main() {
   app := cli.NewApp()
@@ -207,6 +267,11 @@ func main() {
       Usage:   "Runs a command in a running or new container of a particular service",
       Action:  Run,
       SkipFlagParsing: true,
+    },
+    {
+      Name:    "clun",
+      Usage:   "Clones a Git project, copies/generates the project's required dotenv files and starts the whole project",
+      Action:  Clun,
     },
     {
       Name:    "ps",
