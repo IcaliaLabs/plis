@@ -55,7 +55,8 @@ func GetProjectContainerStates() []ContainerState {
 
     for i := range rawContainerStates {
       if rawContainerStates[i] != "" {
-        fields := strings.Fields(rawContainerStates[i])
+        rawContainerState := strings.Trim(rawContainerStates[i], "'")
+        fields := strings.Fields(rawContainerState)
         state := ContainerState{}
         state.Name = fields[0][1:len(fields[0])]
         state.IsRunning = fields[1] == "true"
