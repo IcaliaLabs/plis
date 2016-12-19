@@ -45,3 +45,4 @@ plis stop web
 - [ ] Install Docker (for Mac/Windows or native for Linux) if it is missing.
 - [ ] Make `plis start github.com/some_org/some_dockerized_app` clone the project and run it.
 - [ ] `upgrade` command that upgrades `plis` to the newest version.
+- [ ] `prune` command to invoke `docker system prune`.
