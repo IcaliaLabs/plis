@@ -72,6 +72,17 @@ func main() {
       Action:  cmd.Compose,
       SkipFlagParsing: true,
     },
+    {
+      Name:    "check",
+      Usage:   "Performs several checks inside your project",
+      Subcommands: []cli.Command{
+        {
+          Name:  "context",
+          Usage: "Displays the project context",
+          Action: cmd.CheckContext,
+        },
+      },
+    },
   }
 
   app.Run(os.Args)
