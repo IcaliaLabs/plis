@@ -233,12 +233,6 @@ func main() {
       SkipFlagParsing: true,
     },
     {
-      Name:    "scale",
-      Usage:   "Scales the given services",
-      Action:  func (c *cli.Context) { BypassToCompose("scale", c.Args()) },
-      SkipFlagParsing: true,
-    },
-    {
       Name:    "build",
       Usage:   "Build or rebuild services",
       Action:  func (c *cli.Context) { BypassToCompose("build", c.Args()) },
