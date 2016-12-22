@@ -244,12 +244,6 @@ func main() {
       Action:  func (c *cli.Context) { BypassToCompose("build", c.Args()) },
       SkipFlagParsing: true,
     },
-    {
-      Name:    "bundle",
-      Usage:   "Generate a Docker bundle from the Compose file",
-      Action:  func (c *cli.Context) { BypassToCompose("bundle", c.Args()) },
-      SkipFlagParsing: true,
-    },
   }
 
   app.Run(os.Args)
