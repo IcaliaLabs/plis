@@ -1,6 +1,6 @@
 package project
 
 type ContainerState struct {
-  Name string
-  IsRunning bool
+	Name      string
+	IsRunning bool
 }
