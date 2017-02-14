@@ -1,38 +1,29 @@
 package cmd
 
 import (
-	"regexp"
+	"fmt"
 	"github.com/urfave/cli"
-	"github.com/IcaliaLabs/plis/project"
+	"github.com/IcaliaLabs/plis/action"
 	"github.com/IcaliaLabs/plis/translation"
 )
 
 func Start(c *cli.Context) {
-  args := []string{"docker-compose", "start"}
-  requestedServices := c.Args()
 
-  if len(requestedServices) > 0 {
-    servicesAlreadyCreated := []string{}
-    containers := project.ContainerStates()
+	fmt.Println("plis start called...")
 
-    for i := range requestedServices {
-      serviceName := requestedServices[i]
-      rp := regexp.MustCompile("^\\w+_" + serviceName + "_\\d+")
+  servicesToStart := c.Args()
+	startOneService := (len(servicesToStart) == 1)
 
-      for p := range containers {
-        if rp.FindString(containers[p].Name) != "" {
-          servicesAlreadyCreated = append(servicesAlreadyCreated, serviceName)
-        }
-      }
-    }
-
-    if len(servicesAlreadyCreated) != len(requestedServices) {
-      args = []string{"docker-compose", "up", "-d"}
-    }
-  } else if len(project.ContainerIds()) < 1 {
-    args = []string{"docker-compose", "up", "-d"}
-  }
-
-  command := append(args, requestedServices...)
+  command := action.Start(servicesToStart)
   translation.Exec(command)
+
+	if startOneService {
+		serviceToStart := servicesToStart[0]
+		attachArgs := []string{}
+		fmt.Println("Expressely asked to start one service (with dependencies): ", serviceToStart)
+		command = action.Attach(serviceToStart, attachArgs)
+		translation.Exec(command)
+	} else {
+		fmt.Println("No service was expressely asked to start...")
+	}
 }
