@@ -7,7 +7,19 @@
 Helps your development process with Docker Compose by asking nicely :)
 
 ## Install
-See ([Releases Page](https://github.com/IcaliaLabs/plis/releases))
+
+On macOS, install it via Homebrew:
+
+```
+brew tap icalialabs/formulae
+brew install plis
+```
+
+On other systems you can:
+
+ * Download the executable for your system from the
+[Releases Page](https://github.com/IcaliaLabs/plis/releases)
+ * Place it on any of the paths reachable in $PATH
 
 ## Special behaviors:
 * `plis start [services-optional]`: Starts a docker-compose project, with the following extra functionality:
