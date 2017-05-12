@@ -1,6 +1,7 @@
 [![Code Climate](https://codeclimate.com/repos/5713cd028daddd007c000a55/badges/23a412d4ad98ff7d79c6/gpa.svg)](https://codeclimate.com/repos/5713cd028daddd007c000a55/feed)
 [![Test Coverage](https://codeclimate.com/repos/5713cd028daddd007c000a55/badges/23a412d4ad98ff7d79c6/coverage.svg)](https://codeclimate.com/repos/5713cd028daddd007c000a55/coverage)
 [![Issue Count](https://codeclimate.com/repos/5713cd028daddd007c000a55/badges/23a412d4ad98ff7d79c6/issue_count.svg)](https://codeclimate.com/repos/5713cd028daddd007c000a55/feed)
+![Made with Love by Icalia Labs](https://img.shields.io/badge/With%20love%20by-Icalia%20Labs-ff3434.svg)
 
 # Plis
 
