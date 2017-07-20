@@ -234,12 +234,7 @@ func transform(source map[string]interface{}, target interface{}) error {
 
 func createTransformHook() mapstructure.DecodeHookFuncType {
 	transforms := map[reflect.Type]func(interface{}) (interface{}, error){
-		reflect.TypeOf(types.StringList{}):                       transformStringList,
-		reflect.TypeOf(map[string]string{}):                      transformMapStringString,
-		reflect.TypeOf(types.StringOrNumberList{}):               transformStringOrNumberList,
-		reflect.TypeOf(types.MappingWithEquals{}):                transformMappingOrListFunc("=", true),
-		reflect.TypeOf(types.Labels{}):                           transformMappingOrListFunc("=", false),
-		reflect.TypeOf(types.MappingWithColon{}):                 transformMappingOrListFunc(":", false),
+		reflect.TypeOf(types.Labels{}): transformMappingOrListFunc("=", false),
 	}
 
 	return func(_ reflect.Type, target reflect.Type, data interface{}) (interface{}, error) {
@@ -249,37 +244,6 @@ func createTransformHook() mapstructure.DecodeHookFuncType {
 		}
 		return transform(data)
 	}
-}
-
-func transformStringList(data interface{}) (interface{}, error) {
-	switch value := data.(type) {
-	case string:
-		return []string{value}, nil
-	case []interface{}:
-		return value, nil
-	default:
-		return data, errors.Errorf("invalid type %T for string list", value)
-	}
-}
-
-func transformMapStringString(data interface{}) (interface{}, error) {
-	switch value := data.(type) {
-	case map[string]interface{}:
-		return toMapStringString(value, false), nil
-	case map[string]string:
-		return value, nil
-	default:
-		return data, errors.Errorf("invalid type %T for map[string]string", value)
-	}
-}
-
-func transformStringOrNumberList(value interface{}) (interface{}, error) {
-	list := value.([]interface{})
-	result := make([]string, len(list))
-	for i, item := range list {
-		result[i] = fmt.Sprint(item)
-	}
-	return result, nil
 }
 
 func transformMappingOrListFunc(sep string, allowNil bool) func(interface{}) (interface{}, error) {
