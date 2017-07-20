@@ -21,8 +21,7 @@ import (
 // Based on https://github.com/docker/cli/blob/79b6d376ce9d9d4ee24f44df25af56df3f981c9a/cli/command/stack/deploy_composefile.go
 
 // = methods blatantly copied from github.com/docker/cli/cli/compose/loader ========================
-// parseYAML reads the bytes from a file, parses the bytes into a mapping
-// structure, and returns it.
+
 func parseYAML(source []byte) (map[string]interface{}, error) {
 	var cfg interface{}
 	if err := yaml.Unmarshal(source, &cfg); err != nil {
@@ -235,10 +234,8 @@ func transform(source map[string]interface{}, target interface{}) error {
 
 func createTransformHook() mapstructure.DecodeHookFuncType {
 	transforms := map[reflect.Type]func(interface{}) (interface{}, error){
-		reflect.TypeOf(types.External{}):                         transformExternal,
 		reflect.TypeOf(types.StringList{}):                       transformStringList,
 		reflect.TypeOf(map[string]string{}):                      transformMapStringString,
-		reflect.TypeOf(types.ServiceConfigObjConfig{}):           transformStringSourceMap,
 		reflect.TypeOf(types.StringOrNumberList{}):               transformStringOrNumberList,
 		reflect.TypeOf(types.MappingWithEquals{}):                transformMappingOrListFunc("=", true),
 		reflect.TypeOf(types.Labels{}):                           transformMappingOrListFunc("=", false),
@@ -251,17 +248,6 @@ func createTransformHook() mapstructure.DecodeHookFuncType {
 			return data, nil
 		}
 		return transform(data)
-	}
-}
-
-func transformExternal(data interface{}) (interface{}, error) {
-	switch value := data.(type) {
-	case bool:
-		return map[string]interface{}{"external": value}, nil
-	case map[string]interface{}:
-		return map[string]interface{}{"external": true, "name": value["name"]}, nil
-	default:
-		return data, errors.Errorf("invalid type %T for external", value)
 	}
 }
 
@@ -287,17 +273,6 @@ func transformMapStringString(data interface{}) (interface{}, error) {
 	}
 }
 
-func transformStringSourceMap(data interface{}) (interface{}, error) {
-	switch value := data.(type) {
-	case string:
-		return map[string]interface{}{"source": value}, nil
-	case map[string]interface{}:
-		return data, nil
-	default:
-		return data, errors.Errorf("invalid type %T for secret", value)
-	}
-}
-
 func transformStringOrNumberList(value interface{}) (interface{}, error) {
 	list := value.([]interface{})
 	result := make([]string, len(list))
@@ -307,33 +282,11 @@ func transformStringOrNumberList(value interface{}) (interface{}, error) {
 	return result, nil
 }
 
-func transformServiceNetworkMap(value interface{}) (interface{}, error) {
-	if list, ok := value.([]interface{}); ok {
-		mapValue := map[interface{}]interface{}{}
-		for _, name := range list {
-			mapValue[name] = nil
-		}
-		return mapValue, nil
-	}
-	return value, nil
-}
-
 func transformMappingOrListFunc(sep string, allowNil bool) func(interface{}) (interface{}, error) {
 	return func(data interface{}) (interface{}, error) {
 		return transformMappingOrList(data, sep, allowNil), nil
 	}
 }
-
-// func transformServiceVolumeConfig(data interface{}) (interface{}, error) {
-// 	switch value := data.(type) {
-// 	case string:
-// 		return ParseVolume(value)
-// 	case map[string]interface{}:
-// 		return data, nil
-// 	default:
-// 		return data, errors.Errorf("invalid type %T for service volume", value)
-// 	}
-// }
 
 func toMapStringString(value map[string]interface{}, allowNil bool) map[string]interface{} {
 	output := make(map[string]interface{})
@@ -365,39 +318,6 @@ func transformMappingOrList(mappingOrList interface{}, sep string, allowNil bool
 	}
 	panic(errors.Errorf("expected a map or a list, got %T: %#v", mappingOrList, mappingOrList))
 }
-
-// func toServicePortConfigs(value string) ([]interface{}, error) {
-// 	var portConfigs []interface{}
-//
-// 	ports, portBindings, err := nat.ParsePortSpecs([]string{value})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	// We need to sort the key of the ports to make sure it is consistent
-// 	keys := []string{}
-// 	for port := range ports {
-// 		keys = append(keys, string(port))
-// 	}
-// 	sort.Strings(keys)
-//
-// 	for _, key := range keys {
-// 		// Reuse ConvertPortToPortConfig so that it is consistent
-// 		portConfig, err := opts.ConvertPortToPortConfig(nat.Port(key), portBindings)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		for _, p := range portConfig {
-// 			portConfigs = append(portConfigs, types.ServicePortConfig{
-// 				Protocol:  string(p.Protocol),
-// 				Target:    p.TargetPort,
-// 				Published: p.PublishedPort,
-// 				Mode:      string(p.PublishMode),
-// 			})
-// 		}
-// 	}
-//
-// 	return portConfigs, nil
-// }
 
 func toString(value interface{}, allowNil bool) interface{} {
 	switch {
@@ -464,6 +384,8 @@ func getServiceGrouping(config *types.Config)(map[string][]string, error) {
   return serviceGroups, nil
 }
 
+// GetServiceGroupingFrom parses a Docker Compose file and figures out the service groups
+// by looking for 'com.icalialabs.plis.group' labels.
 func GetServiceGroupingFrom(filename string)(map[string][]string, error) {
   configDetails, err := getConfigDetails(filename)
   if err != nil { return nil, err }
