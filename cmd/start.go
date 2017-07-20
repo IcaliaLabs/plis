@@ -5,13 +5,29 @@ import (
 	"github.com/IcaliaLabs/plis/translation"
 	"github.com/urfave/cli"
 	"regexp"
+
+	"github.com/IcaliaLabs/plis/grouping"
+	"log"
 )
 
 func Start(c *cli.Context) {
 	args := []string{"docker-compose", "start"}
-	requestedServices := c.Args()
+	requestedServicesOrGroups := c.Args()
+	requestedServices := []string{}
 
-	if len(requestedServices) > 0 {
+	if len(requestedServicesOrGroups) > 0 {
+		serviceGroups, err := grouping.GetServiceGroupingFrom("docker-compose.yml")
+		if err != nil { log.Fatalf("error: %v", err) }
+
+		for requestedServiceOrGroupIndex := range requestedServicesOrGroups {
+			serviceOrGroupName := requestedServicesOrGroups[requestedServiceOrGroupIndex]
+			if groupedServices, ok := serviceGroups[serviceOrGroupName]; ok {
+				requestedServices = append(requestedServices, groupedServices...)
+			} else {
+				requestedServices = append(requestedServices, serviceOrGroupName)
+			}
+		}
+
 		servicesAlreadyCreated := []string{}
 		containers := project.ContainerStates()
 
