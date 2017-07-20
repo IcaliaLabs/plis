@@ -1,0 +1,15 @@
+version: "3.1"
+
+services:
+  postgres:
+    image: postgres:9-alpine
+    labels:
+      com.icalialabs.plis.group: database backend relational
+  redis:
+    image: redis:3-alpine
+    labels:
+      com.icalialabs.plis.group: database backend
+  nginx:
+    image: nginx:alpine
+    labels:
+      com.icalialabs.plis.group: frontend
