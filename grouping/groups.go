@@ -8,16 +8,17 @@ import (
   yaml "gopkg.in/yaml.v2"
 )
 
+// Service is a Docker Compose service entry with it's corresponding labels mapped
 type Service struct {
   Labels map[string]string
 }
 
-type ServiceRead struct {
+type serviceRead struct {
   Labels interface{}
 }
 
-type ComposeDataRead struct {
-  Services map[string]ServiceRead
+type composeDataRead struct {
+  Services map[string]serviceRead
 }
 
 func convertLabelList(givenList []interface{}) (map[string]string, error) {
@@ -44,7 +45,7 @@ func getServices(filename string) (map[string]Service, error) {
 		return nil, err
 	}
 
-  var cfg ComposeDataRead
+  var cfg composeDataRead
 	if err := yaml.Unmarshal(bytes, &cfg); err != nil {
 		return nil, err
 	}
