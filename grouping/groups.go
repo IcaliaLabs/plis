@@ -53,6 +53,7 @@ func getServices(filename string) (map[string]Service, error) {
   serviceMap := make(map[string]Service)
 
   for serviceName, serviceRead := range cfg.Services {
+    if serviceRead.Labels == nil { continue }
     service := Service{}
     labelsType := reflect.TypeOf(serviceRead.Labels)
     labelsKind := labelsType.Kind()
