@@ -10,7 +10,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Plis"
 	app.Usage = "Translates common development actions into docker/docker-compose commands by asking nicely"
-	app.Version = "0.0.0.build8"
+	app.Version = "0.0.0.build9"
 
 	app.Commands = []cli.Command{
 		{
