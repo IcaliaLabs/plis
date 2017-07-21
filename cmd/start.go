@@ -42,7 +42,16 @@ func Start(c *cli.Context) {
 			}
 		}
 
-		if len(servicesAlreadyCreated) != len(requestedServices) {
+		shouldUseUp := false
+		for _, requestedService := range requestedServices {
+			requestedServiceIsUp := false
+			for _, serviceAlreadyCreated := range servicesAlreadyCreated {
+		    requestedServiceIsUp = (serviceAlreadyCreated == requestedService)
+			}
+			shouldUseUp = shouldUseUp || !requestedServiceIsUp
+		}
+
+		if shouldUseUp {
 			args = []string{"docker-compose", "up", "-d"}
 		}
 	} else if len(project.ContainerIds()) < 1 {
