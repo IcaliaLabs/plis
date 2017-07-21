@@ -7,6 +7,7 @@ import (
 	"regexp"
 
 	"github.com/IcaliaLabs/plis/grouping"
+	"path/filepath"
 	"log"
 )
 
@@ -15,8 +16,10 @@ func Start(c *cli.Context) {
 	requestedServicesOrGroups := c.Args()
 	requestedServices := []string{}
 
+	composefile := "docker-compose.yml"
+
 	if len(requestedServicesOrGroups) > 0 {
-		serviceGroups, err := grouping.GetServiceGroupingFrom("docker-compose.yml")
+		serviceGroups, err := grouping.GetServiceGroupingFrom(composefile)
 		if err != nil { log.Fatalf("error: %v", err) }
 
 		for requestedServiceOrGroupIndex := range requestedServicesOrGroups {
@@ -31,9 +34,14 @@ func Start(c *cli.Context) {
 		servicesAlreadyCreated := []string{}
 		containers := project.ContainerStates()
 
-		for i := range requestedServices {
-			serviceName := requestedServices[i]
-			rp := regexp.MustCompile("^\\w+_" + serviceName + "_\\d+")
+		absPath, err := filepath.Abs(filepath.Dir(composefile))
+		if err != nil { log.Fatalf("error: %v", err) }
+		_, dir := filepath.Split(absPath)
+		rr := regexp.MustCompile("[^a-zA-Z0-9]")
+		dir = rr.ReplaceAllString(dir, "")
+
+		for _, serviceName := range requestedServices {
+			rp := regexp.MustCompile("^" + dir + "_" + serviceName + "_\\d+")
 
 			for p := range containers {
 				if rp.FindString(containers[p].Name) != "" {
