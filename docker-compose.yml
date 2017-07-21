@@ -8,7 +8,8 @@ services:
   redis:
     image: redis:3-alpine
     labels:
-      com.icalialabs.plis.group: database backend
+      - com.icalialabs.plis.group=database backend
+      - "com.icalialabs.plis.blah=lets do this"
   nginx:
     image: nginx:alpine
     labels:
