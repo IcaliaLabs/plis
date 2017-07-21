@@ -11,7 +11,7 @@ import (
 )
 
 type Service struct {
-  Labels map[string]interface{}
+  Labels map[string]string
 }
 
 type ServiceRead struct {
@@ -22,27 +22,20 @@ type ComposeDataRead struct {
   Services map[string]ServiceRead
 }
 
-func convertLabelList(givenList []interface{}) (map[string]interface{}, error) {
-  convertedMap := make(map[string]interface{})
+func convertLabelList(givenList []interface{}) (map[string]string, error) {
+  convertedMap := make(map[string]string)
   for _, valueInterface := range givenList {
     keyVal := strings.SplitN(valueInterface.(string), "=", 2)
-    key := strings.TrimRight(keyVal[0], " ")
-
-    var value interface{}
-    if len(keyVal) > 1 {
-      value = strings.TrimLeft(keyVal[1], " ")
-    } else {
-      value = true // It was a 'value-less' label...
-    }
-    convertedMap[key] = value
+    keyVal = append(keyVal, "true") // in case it was a value-less label
+    convertedMap[strings.TrimRight(keyVal[0], " ")] = strings.TrimLeft(keyVal[1], " ")
   }
   return convertedMap, nil
 }
 
-func convertLabelMap(givenMap map[interface {}]interface {}) (map[string]interface{}, error) {
-  convertedMap := make(map[string]interface{})
+func convertLabelMap(givenMap map[interface {}]interface {}) (map[string]string, error) {
+  convertedMap := make(map[string]string)
   for keyInterface, valueInterface := range givenMap {
-    convertedMap[keyInterface.(string)] = valueInterface
+    convertedMap[keyInterface.(string)] = valueInterface.(string)
   }
   return convertedMap, nil
 }
