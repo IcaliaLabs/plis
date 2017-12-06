@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/IcaliaLabs/plis/cmd"
+	"./cmd"
 	"github.com/urfave/cli"
 	"os"
 )

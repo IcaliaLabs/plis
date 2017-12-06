@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/IcaliaLabs/plis/project"
+	"../project"
 	"github.com/urfave/cli"
 	"strconv"
 )

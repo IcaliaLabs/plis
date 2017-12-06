@@ -1,7 +1,7 @@
 package project
 
 import (
-	"github.com/IcaliaLabs/plis/translation"
+	"../translation"
 	"strings"
 )
 

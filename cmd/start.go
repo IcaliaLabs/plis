@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/IcaliaLabs/plis/project"
-	"github.com/IcaliaLabs/plis/translation"
+	"../project"
+	"../translation"
 	"github.com/urfave/cli"
 	"regexp"
 
-	"github.com/IcaliaLabs/plis/grouping"
+	"../grouping"
 	"path/filepath"
 	"log"
 )
