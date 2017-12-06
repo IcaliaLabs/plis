@@ -16,6 +16,12 @@ brew tap icalialabs/formulae
 brew install plis
 ```
 
+On Arch Linux, you can install it from AUR:
+
+```
+yaourt -S plis
+```
+
 On other systems you can:
 
  * Download the executable for your system from the
