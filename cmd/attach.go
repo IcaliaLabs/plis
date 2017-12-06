@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/IcaliaLabs/plis/project"
-	"github.com/IcaliaLabs/plis/translation"
+	"../project"
+	"../translation"
 	"github.com/urfave/cli"
 	"os"
 )

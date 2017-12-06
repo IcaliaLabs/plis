@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/IcaliaLabs/plis/translation"
+	"../translation"
 	"github.com/urfave/cli"
 )
 
