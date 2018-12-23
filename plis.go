@@ -1,16 +1,17 @@
 package main
 
 import (
+	"os"
+
 	"github.com/IcaliaLabs/plis/cmd"
 	"github.com/urfave/cli"
-	"os"
 )
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "Plis"
 	app.Usage = "Translates common development actions into docker/docker-compose commands by asking nicely"
-	app.Version = "0.0.0.build10"
+	app.Version = "0.0.0.build11"
 
 	app.Commands = []cli.Command{
 		{
