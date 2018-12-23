@@ -1,9 +1,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/IcaliaLabs/plis/cmd"
 	"github.com/urfave/cli"
-	"os"
 )
 
 func main() {
@@ -11,6 +12,7 @@ func main() {
 	app.Name = "Plis"
 	app.Usage = "Translates common development actions into docker/docker-compose commands by asking nicely"
 	app.Version = "0.0.0.build10"
+	app.EnableBashCompletion = true
 
 	app.Commands = []cli.Command{
 		{
@@ -40,6 +42,12 @@ func main() {
 			Name:            "run",
 			Usage:           "Runs a command in a running or new container of a particular service",
 			Action:          cmd.Run,
+			SkipFlagParsing: true,
+		},
+		{
+			Name:            "reset",
+			Usage:           "Recreates service containers - useful when changing env variables",
+			Action:          cmd.Reset,
 			SkipFlagParsing: true,
 		},
 		{
