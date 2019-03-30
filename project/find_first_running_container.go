@@ -17,7 +17,7 @@ func FindFirstRunningContainer(serviceName string, containers []ContainerState) 
 	}
 
 	dirName := filepath.Base(currentWorkdir)
-	rp := regexp.MustCompile("^" + dirName + "_" + serviceName + "_\\d+")
+	rp := regexp.MustCompile("^" + dirName + "_" + serviceName + "_[\\d+|\\w+/]")
 
 	for i := range containers {
 		if rp.FindString(containers[i].Name) != "" {
