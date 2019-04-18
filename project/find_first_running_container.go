@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 )
 
 // FindFirstRunningContainer finds the state of the first running container
@@ -16,7 +17,7 @@ func FindFirstRunningContainer(serviceName string, containers []ContainerState) 
 		log.Fatal(err)
 	}
 
-	dirName := filepath.Base(currentWorkdir)
+	dirName := strings.ToLower(filepath.Base(currentWorkdir))
 	rp := regexp.MustCompile("^" + dirName + "_" + serviceName + "_\\d+")
 
 	for i := range containers {
