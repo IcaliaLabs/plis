@@ -15,6 +15,11 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
+			Name:   "incinerate",
+			Usage:  "Cleans up all your docker images, networks, volumes",
+			Action: cmd.Incinerate,
+		},
+		{
 			Name:   "start",
 			Usage:  "Starts the project's containers",
 			Action: cmd.Start,
